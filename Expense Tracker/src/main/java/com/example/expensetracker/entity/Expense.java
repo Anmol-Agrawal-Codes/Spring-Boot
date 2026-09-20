@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -77,8 +80,11 @@ public class Expense {
 
     private Long userId;
 
+    @NotNull
+    @Positive
     private double amount;
 
+    @NotBlank
     private String description;
 
     private ExpenseCategory category;

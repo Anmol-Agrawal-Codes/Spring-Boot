@@ -1,6 +1,7 @@
 package com.example.expensetracker.service;
 
 import com.example.expensetracker.entity.Expense;
+import com.example.expensetracker.error.ExpenseNotFoundException;
 import com.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class ExpenseService {
     }
 
     public Expense getExpenseById(Long id) {
-        return expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException("User not found with id: " + id));
     }
     
     public void saveExpense(Expense expense) {
@@ -27,7 +28,7 @@ public class ExpenseService {
 
     public void updateExpense(Long id, Expense updatedExpense) {
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
         if (updatedExpense.getAmount() != 0.0) {
             expense.setAmount(updatedExpense.getAmount());
         }
