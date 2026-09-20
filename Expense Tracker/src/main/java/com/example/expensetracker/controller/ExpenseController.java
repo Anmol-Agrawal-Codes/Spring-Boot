@@ -1,64 +1,43 @@
 package com.example.expensetracker.controller;
 
-import com.example.expensetracker.model.Expense;
+import com.example.expensetracker.entity.Expense;
 import com.example.expensetracker.service.ExpenseService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
-    @Autowired
-    private ExpenseService expenseService;
+    private final ExpenseService expenseService;
 
-    @GetMapping("/")
-    public String viewHomePage(Model model) {
-        List<Expense> expenses = expenseService.getAllExpenses();
-        double totalAmount = expenses.stream().map(Expense::getAmount).reduce(0.0, Double::sum);
-        model.addAttribute("expenses", expenses);
-        model.addAttribute("totalAmount", totalAmount);
-        return "index";
+    public ExpenseController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
     }
 
-    @GetMapping("/addExpense")
-    public String showAddExpensePage(Model model) {
-        Expense expense = new Expense();
-        model.addAttribute("expense", expense);
-        return "add-expense";
-    }
-
-    @PostMapping("/saveExpense")
-    public String saveExpense(@ModelAttribute("expense") Expense expense, Model model) {
+    @PostMapping
+    public void addExpense(@RequestBody Expense expense) {
         expenseService.saveExpense(expense);
-        return "redirect:/";
     }
 
-    @GetMapping("/editExpense/{id}")
-    public String showUpdateExpensePage(@PathVariable Long id, Model model) {
-        Expense expense = expenseService.getExpenseById(id);
-        model.addAttribute("expense", expense);
-        return "update-expense";
+    @GetMapping
+    public List<Expense> getAllExpenses() {
+        return expenseService.getAllExpenses();
     }
 
-    @PostMapping("/updateExpense/{id}")
-    public String updateExpense(@PathVariable Long id, @ModelAttribute("expense") Expense expense, Model model) {
-        Expense existingExpense = expenseService.getExpenseById(id);
-        existingExpense.setDescription(expense.getDescription());
-        existingExpense.setAmount(expense.getAmount());
-        expenseService.saveExpense(existingExpense);
-        return "redirect:/";
+    @GetMapping("/{id}")
+    public Expense getExpenseById(@PathVariable Long id){
+        return expenseService.getExpenseById(id);
     }
 
-    @GetMapping("/deleteExpense/{id}")
-    public String deleteExpense(@PathVariable Long id, Model model) {
+    @PutMapping("/{id}")
+    public void updateExpense(@PathVariable Long id, @RequestBody Expense updatedExpense) {
+        expenseService.updateExpense(id, updatedExpense);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteExpenseById(@PathVariable Long id){
         expenseService.deleteExpenseById(id);
-        return "redirect:/";
     }
 }
