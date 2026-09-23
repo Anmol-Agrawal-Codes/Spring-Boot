@@ -1,11 +1,16 @@
 package com.example.expensetracker.controller;
 
+import com.example.expensetracker.dto.ExpenseSummary;
 import com.example.expensetracker.entity.Expense;
+import com.example.expensetracker.entity.Expense.ExpenseCategory;
+import com.example.expensetracker.entity.Expense.PaymentMethod;
 import com.example.expensetracker.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -41,5 +46,30 @@ public class ExpenseController {
     @DeleteMapping("/{id}")
     public void deleteExpenseById(@PathVariable Long id){
         expenseService.deleteExpenseById(id);
+    }
+
+    @GetMapping(params = "category")
+    public List<Expense> getAllExpensesByCategory(@RequestParam ExpenseCategory category){
+        return expenseService.findByCategory(category);
+    }
+
+    @GetMapping("/report/monthly")
+    public Map<Month, Double> getMonthlyExpense(){
+        return expenseService.monthlyExpense();
+    }
+
+    @GetMapping("/report/categorySpends")
+    public Map<ExpenseCategory, Double> getCategoryExpense(){
+        return expenseService.expenseByCategory();
+    }
+
+    @GetMapping("/report/paymentMethod")
+    public Map<PaymentMethod, Double> getPaymentMethodExpense() {
+        return expenseService.expenseByPaymentMethod();
+    }
+
+    @GetMapping("/report/summary")
+    public ExpenseSummary getExpensesSummary() {
+        return expenseService.expenseSummary();
     }
 }

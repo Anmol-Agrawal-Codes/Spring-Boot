@@ -1,12 +1,18 @@
 package com.example.expensetracker.service;
 
+import com.example.expensetracker.dto.ExpenseSummary;
 import com.example.expensetracker.entity.Expense;
+import com.example.expensetracker.entity.Expense.ExpenseCategory;
+import com.example.expensetracker.entity.Expense.PaymentMethod;
 import com.example.expensetracker.error.ExpenseNotFoundException;
 import com.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExpenseService {
@@ -49,5 +55,84 @@ public class ExpenseService {
 
     public void deleteExpenseById(Long id) {
         expenseRepository.deleteById(id);
+    }
+
+    public List<Expense> findByCategory(ExpenseCategory category) {
+        return expenseRepository.findByCategory(category);
+    }
+
+    public List<Expense> findByPaymentMethod(Expense.PaymentMethod method) {
+        return expenseRepository.findByPaymentMethod(method);
+    }
+
+    public double totalExpense() {
+        double sum = 0.0;
+        for (Expense expense : expenseRepository.findAll()) {
+            sum += expense.getAmount();
+        }
+        return sum;
+    }
+
+    public Map<Month, Double> monthlyExpense() {
+        Map<Month, Double> map = new HashMap<>();
+        for (Expense expense : expenseRepository.findAll()) {
+            Month month = expense.getExpenseDate().getMonth();
+            map.put(month, map.getOrDefault(month, 0.0) + expense.getAmount());
+        }
+        return map;
+    }
+
+    public Map<ExpenseCategory, Double> expenseByCategory() {
+        Map<ExpenseCategory, Double> map = new HashMap<>();
+        for (Expense expense : expenseRepository.findAll()) {
+            ExpenseCategory category = expense.getCategory();
+            map.put(category, map.getOrDefault(category, 0.0) + expense.getAmount());
+        }
+        return map;
+    }
+
+    public Map<PaymentMethod, Double> expenseByPaymentMethod() {
+        Map<PaymentMethod, Double> map = new HashMap<>();
+        for (Expense expense : expenseRepository.findAll()) {
+            PaymentMethod paymentMethod = expense.getPaymentMethod();
+            map.put(paymentMethod, map.getOrDefault(paymentMethod, 0.0) + expense.getAmount());
+        }
+        return map;
+    }
+
+    public ExpenseSummary expenseSummary() {
+        List<Expense> expenses = expenseRepository.findAll();
+
+        double totalExpense = 0.0;
+        int totalTransections = 0;
+        double avgExpense = 0;
+        double highestExpense = 0;
+        Map<Month, Double> monthlyExpense = new HashMap<>();
+        Map<ExpenseCategory, Double> expenseByCategory = new HashMap<>();
+        Map<PaymentMethod, Double> expenseByPaymentMethod = new HashMap<>();
+
+        for (Expense expense : expenses) {
+            totalExpense +=  expense.getAmount();
+            totalTransections++;
+            highestExpense = Math.max(highestExpense, expense.getAmount());
+
+            Month month = expense.getExpenseDate().getMonth();
+            monthlyExpense.put(month, monthlyExpense.getOrDefault(month, 0.0) + expense.getAmount());
+            ExpenseCategory category = expense.getCategory();
+            expenseByCategory.put(category, expenseByCategory.getOrDefault(category, 0.0) + expense.getAmount());
+            PaymentMethod paymentMethod = expense.getPaymentMethod();
+            expenseByPaymentMethod.put(paymentMethod,  expenseByPaymentMethod.getOrDefault(paymentMethod, 0.0) + expense.getAmount());
+        }
+        avgExpense = totalExpense / totalTransections;
+
+        return new ExpenseSummary(
+                totalExpense,
+                totalTransections,
+                avgExpense,
+                highestExpense,
+                monthlyExpense,
+                expenseByCategory,
+                expenseByPaymentMethod
+        );
     }
 }
