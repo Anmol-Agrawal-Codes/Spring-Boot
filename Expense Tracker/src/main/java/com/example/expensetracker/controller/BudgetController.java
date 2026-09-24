@@ -61,15 +61,7 @@ public class BudgetController {
     }
 
     @GetMapping(value = "/summary", params = "category")
-    public BudgetSummaryResponse getBudgetSummaryByCategory(@RequestParam Category category) {
-        return  budgetService.getBudgetSummaryByCategory(category);
+    public BudgetSummaryResponse getBudgetSummaryByCategory(@RequestParam Category category, @RequestParam int month, @RequestParam int year) {
+        return  budgetService.getBudgetSummaryByCategory(category, month, year);
     }
-
-//    @GetMapping("/{id}")
-//    public Budget getBudgetById(@PathVariable Long id) {
-//        return budgetService.getBudgetById(id);
-//    }
-
-
-
 }

@@ -5,6 +5,7 @@ import com.example.expensetracker.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,6 +13,5 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByCategory(Category category);
     List<Expense> findByPaymentMethod(Expense.PaymentMethod method);
-    List<Expense> findByExpenseDate(LocalDateTime expenseDate);
-    List<Expense> findByCategoryAndExpenseDate(Category category, LocalDateTime expenseDate);
+    List<Expense> findByCategoryAndExpenseDateBetween(Category category, LocalDate startDate, LocalDate endDate);
 }
