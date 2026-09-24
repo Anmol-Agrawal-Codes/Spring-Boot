@@ -2,23 +2,30 @@ package com.example.expensetracker.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
+@Table(
+        name = "budget",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_category_month_year",
+                        columnNames = {"category", "month", "year"}
+                )
+        }
+)
 public class Budget {
-
-    public enum BudgetCategory {
-        FOOD, TRANSPORT, SHOPPING, ENTERTAINMENT, BILLS, HEALTH, EDUCATION, OTHER
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private BudgetCategory category;
+    @NotNull
+    private Category category;
 
     @NotNull
-    // @Positive // Feel free to uncomment this validation constraint
+    @Positive
     private double monthlyLimit;
 
     @NotNull
@@ -32,8 +39,8 @@ public class Budget {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public BudgetCategory getCategory() { return category; }
-    public void setCategory(BudgetCategory category) { this.category = category; }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
     public double getMonthlyLimit() { return monthlyLimit; }
     public void setMonthlyLimit(double monthlyLimit) { this.monthlyLimit = monthlyLimit; }

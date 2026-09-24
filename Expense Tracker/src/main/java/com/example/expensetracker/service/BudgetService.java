@@ -1,15 +1,14 @@
 package com.example.expensetracker.service;
 
-import com.example.expensetracker.dto.BudgetResponse;
+import com.example.expensetracker.dto.BudgetSummaryResponse;
 import com.example.expensetracker.entity.Budget;
-import com.example.expensetracker.entity.Budget.BudgetCategory;
+import com.example.expensetracker.entity.Category;
 import com.example.expensetracker.entity.Expense;
 import com.example.expensetracker.repository.BudgetRepository;
 import com.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,11 +27,11 @@ public class BudgetService {
         return budgetRepository.findAll();
     }
 
-    public List<Budget> getBudgetByCategory(BudgetCategory category) {
+    public List<Budget> getBudgetByCategory(Category category) {
         return budgetRepository.findByCategory(category);
     }
 
-    public void deleteBudgetByCategory(BudgetCategory category) {
+    public void deleteBudgetByCategory(Category category) {
         List<Budget> budgets = budgetRepository.findAll();
         for (Budget budget : budgets) {
             if (budget.getCategory() == category) {
@@ -45,9 +44,9 @@ public class BudgetService {
         budgetRepository.deleteById(id);
     }
 
-    public BudgetResponse getBudgetSummaryByCategory(BudgetCategory category) {
+    public BudgetSummaryResponse getBudgetSummaryByCategory(Category category) {
         List<Budget> budgets = budgetRepository.findByCategory(category);
-        List<Expense> expenses = expenseRepository.findByCategory(Expense.ExpenseCategory.valueOf(category.toString()));
+        List<Expense> expenses = expenseRepository.findByCategory(Category.valueOf(category.toString()));
         double budgetSum = 0;
         double spent = 0;
         double remaining = 0;
@@ -55,6 +54,10 @@ public class BudgetService {
         for (Budget budget : budgets) {
             budgetSum += budget.getMonthlyLimit();
         }
+        if(budgetSum == 0){
+            return new BudgetSummaryResponse(category, budgetSum, spent, remaining, percentageUsed);
+        }
+        
         for (Expense expense : expenses) {
             spent += expense.getAmount();
         }
@@ -62,17 +65,20 @@ public class BudgetService {
         remaining = budgetSum - spent;
         percentageUsed = ((budgetSum - remaining) / budgetSum) * 100;
 
-        return new BudgetResponse(category, budgetSum,
+        return new BudgetSummaryResponse(category, budgetSum,
                 spent, remaining, percentageUsed);
     }
 
+    public List<Budget> getBudgetByMonth(int month) {
+        return budgetRepository.findByBudgetMonth(month);
+    }
 
-//    public Budget getBudgetById(long id) {
-//        return budgetRepository.findById(id);
-//    }
+    public List<Budget> getBudgetByYear(int year) {
+        return budgetRepository.findByBudgetYear(year);
+    }
 
-//    public BudgetResponse getBudgetSummary(){
-//
-//    }
+    public Budget getBudgetByCategoryAndBudgetMonthAndBudgetYear(Category category, int month, int year) {
+        return budgetRepository.findByCategoryAndBudgetYearAndBudgetMonth(category, month, year);
+    }
 }
 

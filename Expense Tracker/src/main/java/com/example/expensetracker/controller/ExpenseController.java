@@ -2,7 +2,7 @@ package com.example.expensetracker.controller;
 
 import com.example.expensetracker.dto.ExpenseSummary;
 import com.example.expensetracker.entity.Expense;
-import com.example.expensetracker.entity.Expense.ExpenseCategory;
+import com.example.expensetracker.entity.Category;
 import com.example.expensetracker.entity.Expense.PaymentMethod;
 import com.example.expensetracker.service.ExpenseService;
 import jakarta.validation.Valid;
@@ -32,9 +32,44 @@ public class ExpenseController {
         return expenseService.getAllExpenses();
     }
 
+    @GetMapping(params = {"month", "year"})
+    public List<Expense> getExpensesByMonthAndYear(@RequestParam("month") int month, @RequestParam("year") int year) {
+        return expenseService.getExpenseByMonthAndYear(month, year);
+    }
+
     @GetMapping("/{id}")
     public Expense getExpenseById(@PathVariable Long id){
         return expenseService.getExpenseById(id);
+    }
+
+    @GetMapping(params = "category")
+    public List<Expense> getAllExpensesByCategory(@RequestParam Category category){
+        return expenseService.findByCategory(category);
+    }
+
+    @GetMapping(params = { "category", "month", "year" })
+    public List<Expense> getExpenseByCategoryAndMonthAndYear(@RequestParam Category category, @RequestParam("month") int month, @RequestParam("year") int year){
+        return expenseService.getExpenseByCategoryAndMonthAndYear(category, month, year);
+    }
+
+    @GetMapping("/report/monthly")
+    public Map<Month, Double> getMonthlyExpense(){
+        return expenseService.getMonthlyExpense();
+    }
+
+    @GetMapping("/report/categorySpends")
+    public Map<Category, Double> getCategoryExpense(){
+        return expenseService.getExpenseByCategory();
+    }
+
+    @GetMapping("/report/paymentMethod")
+    public Map<PaymentMethod, Double> getPaymentMethodExpense() {
+        return expenseService.getExpenseByPaymentMethod();
+    }
+
+    @GetMapping("/report/summary")
+    public ExpenseSummary getExpensesSummary() {
+        return expenseService.getExpenseSummary();
     }
 
     @PatchMapping("/{id}")
@@ -46,30 +81,5 @@ public class ExpenseController {
     @DeleteMapping("/{id}")
     public void deleteExpenseById(@PathVariable Long id){
         expenseService.deleteExpenseById(id);
-    }
-
-    @GetMapping(params = "category")
-    public List<Expense> getAllExpensesByCategory(@RequestParam ExpenseCategory category){
-        return expenseService.findByCategory(category);
-    }
-
-    @GetMapping("/report/monthly")
-    public Map<Month, Double> getMonthlyExpense(){
-        return expenseService.monthlyExpense();
-    }
-
-    @GetMapping("/report/categorySpends")
-    public Map<ExpenseCategory, Double> getCategoryExpense(){
-        return expenseService.expenseByCategory();
-    }
-
-    @GetMapping("/report/paymentMethod")
-    public Map<PaymentMethod, Double> getPaymentMethodExpense() {
-        return expenseService.expenseByPaymentMethod();
-    }
-
-    @GetMapping("/report/summary")
-    public ExpenseSummary getExpensesSummary() {
-        return expenseService.expenseSummary();
     }
 }

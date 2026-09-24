@@ -1,12 +1,12 @@
 package com.example.expensetracker.controller;
 
-import com.example.expensetracker.dto.BudgetResponse;
+import com.example.expensetracker.dto.BudgetSummaryResponse;
 import com.example.expensetracker.entity.Budget;
+import com.example.expensetracker.entity.Category;
 import com.example.expensetracker.service.BudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,8 +31,23 @@ public class BudgetController {
     }
 
     @GetMapping(params = "category")
-    public List<Budget> getBudgetByCategory(@RequestParam Budget.BudgetCategory category) {
+    public List<Budget> getBudgetByCategory(@RequestParam Category category) {
         return budgetService.getBudgetByCategory(category);
+    }
+
+    @GetMapping(params = "year")
+    public List<Budget> getBudgetByYear(@RequestParam int year) {
+        return budgetService.getBudgetByYear(year);
+    }
+
+    @GetMapping(params = "month")
+    public List<Budget> getBudgetByMonth(@RequestParam int month) {
+        return budgetService.getBudgetByMonth(month);
+    }
+
+    @GetMapping(params = {"category", "year", "month"})
+    public Budget getBudgetByCategoryAndYearAndMonth(@RequestParam Category category, @RequestParam int month, @RequestParam int year) {
+        return budgetService.getBudgetByCategoryAndBudgetMonthAndBudgetYear(category, month, year);
     }
 
     @DeleteMapping(value = "/delete", params = "id")
@@ -41,12 +56,12 @@ public class BudgetController {
     }
 
     @DeleteMapping(value = "/delete", params = "category")
-    public void deleteBudgetByCategory(@RequestParam Budget.BudgetCategory category) {
+    public void deleteBudgetByCategory(@RequestParam Category category) {
         budgetService.deleteBudgetByCategory(category);
     }
 
     @GetMapping(value = "/summary", params = "category")
-    public BudgetResponse getBudgetSummaryByCategory(@RequestParam Budget.BudgetCategory category) {
+    public BudgetSummaryResponse getBudgetSummaryByCategory(@RequestParam Category category) {
         return  budgetService.getBudgetSummaryByCategory(category);
     }
 

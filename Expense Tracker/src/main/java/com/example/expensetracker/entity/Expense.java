@@ -20,11 +20,11 @@ public class Expense {
         this.userId = userId;
     }
 
-    public ExpenseCategory getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(ExpenseCategory category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -52,17 +52,6 @@ public class Expense {
         this.createdAt = createdAt;
     }
 
-    public enum ExpenseCategory {
-        FOOD,
-        TRANSPORT,
-        SHOPPING,
-        ENTERTAINMENT,
-        BILLS,
-        HEALTH,
-        EDUCATION,
-        OTHER
-    }
-
     public enum PaymentMethod {
         CASH,
         CREDIT_CARD,
@@ -84,8 +73,8 @@ public class Expense {
     @NotBlank
     private String description;
 
-    @Enumerated(EnumType.ORDINAL)
-    private ExpenseCategory category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     private LocalDate expenseDate;
 
