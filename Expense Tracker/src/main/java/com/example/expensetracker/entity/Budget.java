@@ -21,6 +21,7 @@ public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private double monthlyLimit;
     private int budgetMonth;

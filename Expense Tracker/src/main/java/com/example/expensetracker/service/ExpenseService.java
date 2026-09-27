@@ -35,9 +35,17 @@ public class ExpenseService {
         return expensesResponse;
     }
 
-    public Expense getExpenseById(Long id) {
-        return expenseRepository.findById(id)
+    public ExpenseResponse getExpenseById(Long id) {
+        Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found with id: " + id));
+        return new  ExpenseResponse(
+                expense.getId(),
+                expense.getAmount(),
+                expense.getDescription(),
+                expense.getCategory(),
+                expense.getExpenseDate(),
+                expense.getPaymentMethod()
+        );
     }
 
     public void saveExpense(ExpenseRequest dto) {

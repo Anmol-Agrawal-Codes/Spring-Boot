@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public record ExpenseRequest(
         @NotNull @Positive double amount,
         @NotBlank String description,
-        @NotNull @Enumerated(EnumType.STRING) Category category,
+        @NotNull Category category,
         @CreationTimestamp LocalDate expenseDate,
         @NotNull PaymentMethod paymentMethod
 ) {}

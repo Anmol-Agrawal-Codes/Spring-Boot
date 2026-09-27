@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record BudgetRequest(
-        @NotNull @Enumerated(EnumType.STRING) Category category,
+        @NotNull Category category,
         @Positive @NotNull double monthlyLimit,
         @NotNull int budgetMonth,
         @NotNull int budgetYear

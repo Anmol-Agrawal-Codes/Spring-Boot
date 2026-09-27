@@ -26,8 +26,11 @@ public class Expense {
 
     private double amount;
     private String description;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate expenseDate;
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

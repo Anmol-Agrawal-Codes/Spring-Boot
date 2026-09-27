@@ -40,7 +40,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/{id}")
-    public Expense getExpenseById(@PathVariable Long id){
+    public ExpenseResponse getExpenseById(@PathVariable Long id){
         return expenseService.getExpenseById(id);
     }
 
