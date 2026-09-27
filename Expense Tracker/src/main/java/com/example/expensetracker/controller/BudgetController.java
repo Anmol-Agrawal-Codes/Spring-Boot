@@ -1,9 +1,11 @@
 package com.example.expensetracker.controller;
 
+import com.example.expensetracker.dto.BudgetRequest;
+import com.example.expensetracker.dto.BudgetResponse;
 import com.example.expensetracker.dto.BudgetSummaryResponse;
-import com.example.expensetracker.entity.Budget;
 import com.example.expensetracker.entity.Category;
 import com.example.expensetracker.service.BudgetService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,32 +23,32 @@ public class BudgetController {
     }
 
     @GetMapping
-    public List<Budget> getBudget() {
+    public List<BudgetResponse> getBudget() {
         return budgetService.getBudget();
     }
 
     @PostMapping
-    public void save(@RequestBody Budget budget) {
+    public void save(@Valid @RequestBody BudgetRequest budget) {
         budgetService.save(budget);
     }
 
     @GetMapping(params = "category")
-    public List<Budget> getBudgetByCategory(@RequestParam Category category) {
+    public List<BudgetResponse> getBudgetByCategory(@RequestParam Category category) {
         return budgetService.getBudgetByCategory(category);
     }
 
     @GetMapping(params = "year")
-    public List<Budget> getBudgetByYear(@RequestParam int year) {
+    public List<BudgetResponse> getBudgetByYear(@RequestParam int year) {
         return budgetService.getBudgetByYear(year);
     }
 
     @GetMapping(params = "month")
-    public List<Budget> getBudgetByMonth(@RequestParam int month) {
+    public List<BudgetResponse> getBudgetByMonth(@RequestParam int month) {
         return budgetService.getBudgetByMonth(month);
     }
 
     @GetMapping(params = {"category", "year", "month"})
-    public Budget getBudgetByCategoryAndYearAndMonth(@RequestParam Category category, @RequestParam int month, @RequestParam int year) {
+    public BudgetResponse getBudgetByCategoryAndYearAndMonth(@RequestParam Category category, @RequestParam int month, @RequestParam int year) {
         return budgetService.getBudgetByCategoryAndBudgetMonthAndBudgetYear(category, month, year);
     }
 

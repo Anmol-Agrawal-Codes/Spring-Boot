@@ -1,5 +1,7 @@
 package com.example.expensetracker.controller;
 
+import com.example.expensetracker.dto.ExpenseRequest;
+import com.example.expensetracker.dto.ExpenseResponse;
 import com.example.expensetracker.dto.ExpenseSummary;
 import com.example.expensetracker.entity.Expense;
 import com.example.expensetracker.entity.Category;
@@ -23,17 +25,17 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public void addExpense(@Valid @RequestBody Expense expense) {
+    public void addExpense(@Valid @RequestBody ExpenseRequest expense) {
         expenseService.saveExpense(expense);
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses() {
+    public List<ExpenseResponse> getAllExpenses() {
         return expenseService.getAllExpenses();
     }
 
     @GetMapping(params = {"month", "year"})
-    public List<Expense> getExpensesByMonthAndYear(@RequestParam("month") int month, @RequestParam("year") int year) {
+    public List<ExpenseResponse> getExpensesByMonthAndYear(@RequestParam("month") int month, @RequestParam("year") int year) {
         return expenseService.getExpenseByMonthAndYear(month, year);
     }
 
@@ -43,12 +45,12 @@ public class ExpenseController {
     }
 
     @GetMapping(params = "category")
-    public List<Expense> getAllExpensesByCategory(@RequestParam Category category){
+    public List<ExpenseResponse> getAllExpensesByCategory(@RequestParam Category category){
         return expenseService.findByCategory(category);
     }
 
     @GetMapping(params = { "category", "month", "year" })
-    public List<Expense> getExpenseByCategoryAndMonthAndYear(@RequestParam Category category, @RequestParam("month") int month, @RequestParam("year") int year){
+    public List<ExpenseResponse> getExpenseByCategoryAndMonthAndYear(@RequestParam Category category, @RequestParam("month") int month, @RequestParam("year") int year){
         return expenseService.getExpenseByCategoryAndMonthAndYear(category, month, year);
     }
 
@@ -74,7 +76,7 @@ public class ExpenseController {
 
     @PatchMapping("/{id}")
     @PutMapping("/{id}")
-    public void updateExpense(@PathVariable Long id, @RequestBody Expense updatedExpense) {
+    public void updateExpense(@Valid @PathVariable Long id, @Valid @RequestBody ExpenseRequest updatedExpense) {
         expenseService.updateExpense(id, updatedExpense);
     }
 
