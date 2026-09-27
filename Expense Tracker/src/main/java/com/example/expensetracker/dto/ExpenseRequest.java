@@ -16,6 +16,6 @@ public record ExpenseRequest(
         @NotNull @Positive double amount,
         @NotBlank String description,
         @NotNull Category category,
-        @CreationTimestamp LocalDate expenseDate,
+        LocalDate expenseDate,
         @NotNull PaymentMethod paymentMethod
 ) {}
