@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 public record ExpenseResponse(
         Long id,
+        Long userId,
         double amount,
         String description,
         Category category,

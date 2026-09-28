@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ExpenseRequest(
+        @NotNull Long userId,
         @NotNull @Positive double amount,
         @NotBlank String description,
         @NotNull Category category,
