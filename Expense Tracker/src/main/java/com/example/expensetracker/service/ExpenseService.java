@@ -55,28 +55,21 @@ public class ExpenseService {
         if (expense == null) {
             throw new ExpenseNotFoundException("Expense not found");
         }
-        // Use modern record field accessors to safely update the Entity fields
-        if (updatedExpenseDto.amount() != 0.0) {
-            expense.setAmount(updatedExpenseDto.amount());
-        }
-        if (updatedExpenseDto.description() != null) {
-            expense.setDescription(updatedExpenseDto.description());
-        }
-        if (updatedExpenseDto.category() != null) {
-            expense.setCategory(updatedExpenseDto.category());
-        }
-        if (updatedExpenseDto.expenseDate() != null) {
-            expense.setExpenseDate(updatedExpenseDto.expenseDate());
-        }
-        if (updatedExpenseDto.paymentMethod() != null) {
-            expense.setPaymentMethod(updatedExpenseDto.paymentMethod());
-        }
+        expense.setAmount(updatedExpenseDto.amount());
+        expense.setDescription(updatedExpenseDto.description());
+        expense.setCategory(updatedExpenseDto.category());
+        expense.setExpenseDate(updatedExpenseDto.expenseDate());
+        expense.setPaymentMethod(updatedExpenseDto.paymentMethod());
 
         expenseRepository.save(expense);
     }
 
     public void deleteExpenseByUserAndId(Long userId, Long id) {
-        expenseRepository.deleteByUserAndId(findUser(userId), id);
+        Expense expense = expenseRepository.findByUserAndId(findUser(userId), id);
+        if (expense == null)  {
+            throw new ExpenseNotFoundException("Expense not found");
+        }
+        expenseRepository.delete(expense);
     }
 
     public ExpenseResponse getExpenseByUserAndId(Long userId, Long expenseId) {
@@ -177,7 +170,7 @@ public class ExpenseService {
     }
 
     public List<ExpenseResponse> getExpenseByUserAndMonthAndYear(Long userId, int month, int year) {
-        List<Expense> expenses = expenseRepository.findByUserAndMonthAndYear(
+        List<Expense> expenses = expenseRepository.findByUserAndExpenseDateBetween(
                 findUser(userId),
                 LocalDate.of(year, month, 1),
                 YearMonth.of(year, month).atEndOfMonth()

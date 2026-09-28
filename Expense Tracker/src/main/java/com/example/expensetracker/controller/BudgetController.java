@@ -4,7 +4,6 @@ import com.example.expensetracker.dto.BudgetRequest;
 import com.example.expensetracker.dto.BudgetResponse;
 import com.example.expensetracker.dto.BudgetSummaryResponse;
 import com.example.expensetracker.entity.Category;
-import com.example.expensetracker.entity.User;
 import com.example.expensetracker.service.BudgetService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
