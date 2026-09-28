@@ -74,13 +74,8 @@ public class BudgetService {
         budgetRepository.deleteByUserAndCategory(findUser(userId), category);
     }
 
-    public void deleteBudgetById(Long id) {
-        Budget budget = budgetRepository.findById(id)
-                .orElseThrow(() ->
-                        new BudgetNotFoundException(
-                                "No Budget is available with id: " + id
-                        ));
-
+    public void deleteBudgetByUserAndId(Long userId, Long id) {
+        Budget budget = budgetRepository.findByUserAndId(findUser(userId), id);
         budgetRepository.delete(budget);
     }
 

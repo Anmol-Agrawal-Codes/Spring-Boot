@@ -39,49 +39,49 @@ public class ExpenseController {
         return expenseService.getExpenseByUserAndMonthAndYear(userId, month, year);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", params = {"userId"})
     public ExpenseResponse getExpenseByUserAndId(@RequestParam Long userId, @PathVariable Long id){
         return expenseService.getExpenseByUserAndId(userId, id);
     }
 
-    @GetMapping(params = "category")
+    @GetMapping(params = {"userId", "category"})
     public List<ExpenseResponse> getAllExpensesByUserAndCategory(@RequestParam Long userId, @RequestParam Category category){
-        return expenseService.findByUserAndCategory(userId, category);
+        return expenseService.getExpenseByUserAndCategory(userId, category);
     }
 
-    @GetMapping(params = { "category", "month", "year" })
+    @GetMapping(params = { "userId", "category", "month", "year" })
     public List<ExpenseResponse> getExpenseByUserAndCategoryAndMonthAndYear(@RequestParam Long userId, @RequestParam Category category, @RequestParam("month") int month, @RequestParam("year") int year){
         return expenseService.getExpenseByUserAndCategoryAndMonthAndYear(userId, category, month, year);
     }
 
-    @GetMapping("/report/monthly")
+    @GetMapping(value = "/report/monthly", params = "userId")
     public Map<Month, Double> getMonthlyExpenseByUser(@RequestParam Long userId){
         return expenseService.getMonthlyExpenseByUser(userId);
     }
 
-    @GetMapping("/report/categorySpends")
+    @GetMapping(value = "/report/categorySpends", params = "userId")
     public Map<Category, Double> getCategoryExpenseByUser(@RequestParam Long userId){
         return expenseService.getExpenseByUserAndCategory(userId);
     }
 
-    @GetMapping("/report/paymentMethod")
+    @GetMapping(value = "/report/paymentMethod", params = "userId")
     public Map<PaymentMethod, Double> getPaymentMethodExpenseByUser(@RequestParam Long userId) {
         return expenseService.getExpenseByUserAndPaymentMethod(userId);
     }
 
-    @GetMapping("/report/summary")
+    @GetMapping(value = "/report/summary", params = "userId")
     public ExpenseSummary getExpensesSummaryByUser(@RequestParam Long userId) {
         return expenseService.getExpenseSummaryByUser(userId);
     }
 
-    @PatchMapping("/{id}")
-    @PutMapping("/{id}")
+    @PatchMapping(value = "/{id}", params = "userId")
+    @PutMapping(value = "/{id}", params = "userId")
     public void updateExpenseByUser(@RequestParam Long userId, @Valid @PathVariable Long id, @Valid @RequestBody ExpenseRequest updatedExpense) {
         expenseService.updateExpense(userId, id, updatedExpense);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteExpenseById(@PathVariable Long id){
-        expenseService.deleteExpenseById(id);
+    @DeleteMapping(value = "/{id}", params = "userId")
+    public void deleteExpenseByUserAndId(@PathVariable Long id, @RequestParam Long userId) {
+        expenseService.deleteExpenseByUserAndId(userId, id);
     }
 }

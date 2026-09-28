@@ -1,12 +1,11 @@
 package com.example.expensetracker.controller;
 
+import com.example.expensetracker.dto.UserRequest;
+import com.example.expensetracker.dto.UserResponse;
 import com.example.expensetracker.entity.User;
 import com.example.expensetracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,12 +17,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public void addUser(User user){
+    public void addUser(@RequestBody UserRequest user){
         userService.saveUser(user);
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public List<UserResponse> getUsers(){
         return userService.getUsers();
     }
 }

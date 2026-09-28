@@ -1,18 +1,16 @@
 package com.example.expensetracker.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "users")
 public class User {
 
     @Id
@@ -20,6 +18,6 @@ public class User {
     private Long id;
     private String userName;
     private String email;
-    @CurrentTimestamp
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

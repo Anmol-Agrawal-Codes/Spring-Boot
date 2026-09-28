@@ -14,7 +14,9 @@ import com.example.expensetracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -37,6 +39,7 @@ public class ExpenseService {
     public void saveExpense(ExpenseRequest dto) {
         // Map record fields natively using accessor syntax: dto.amount() instead of getAmount()
         Expense expense = new Expense();
+        expense.setUser(findUser(dto.userId()));
         expense.setAmount(dto.amount());
         expense.setDescription(dto.description());
         expense.setCategory(dto.category());
@@ -49,7 +52,9 @@ public class ExpenseService {
     public void updateExpense(Long userId, Long id, ExpenseRequest updatedExpenseDto) {
         // Fetch the mutable database Entity
         Expense expense = expenseRepository.findByUserAndId(findUser(userId), id);
-
+        if (expense == null) {
+            throw new ExpenseNotFoundException("Expense not found");
+        }
         // Use modern record field accessors to safely update the Entity fields
         if (updatedExpenseDto.amount() != 0.0) {
             expense.setAmount(updatedExpenseDto.amount());
@@ -70,15 +75,19 @@ public class ExpenseService {
         expenseRepository.save(expense);
     }
 
-    public void deleteExpenseById(Long id) {
-        expenseRepository.deleteById(id);
+    public void deleteExpenseByUserAndId(Long userId, Long id) {
+        expenseRepository.deleteByUserAndId(findUser(userId), id);
     }
 
     public ExpenseResponse getExpenseByUserAndId(Long userId, Long expenseId) {
-        return toResponse(expenseRepository.findByUserAndId(findUser(userId), expenseId));
+        Expense expense = expenseRepository.findByUserAndId(findUser(userId), expenseId);
+        if (expense == null) {
+            throw new ExpenseNotFoundException("Expense not found");
+        }
+        return toResponse(expense);
     }
 
-    public List<ExpenseResponse> findByUserAndCategory(Long userId, Category category) {
+    public List<ExpenseResponse> getExpenseByUserAndCategory(Long userId, Category category) {
         List<Expense> expenses = expenseRepository.findByUserAndCategory(findUser(userId), category);
         List<ExpenseResponse> expenseResponses = new ArrayList<>();
         for (Expense expense : expenses) {
@@ -87,7 +96,7 @@ public class ExpenseService {
         return expenseResponses;
     }
 
-    public List<ExpenseResponse> findByUserAndPaymentMethod(Long userId, PaymentMethod method) {
+    public List<ExpenseResponse> getExpenseByUserAndPaymentMethod(Long userId, PaymentMethod method) {
         List<Expense> expenses = expenseRepository.findByUserAndPaymentMethod(findUser(userId), method);
         List<ExpenseResponse> expenseResponses = new ArrayList<>();
         for (Expense expense : expenses) {
@@ -168,7 +177,11 @@ public class ExpenseService {
     }
 
     public List<ExpenseResponse> getExpenseByUserAndMonthAndYear(Long userId, int month, int year) {
-        List<Expense> expenses = expenseRepository.findByUser(findUser(userId));
+        List<Expense> expenses = expenseRepository.findByUserAndMonthAndYear(
+                findUser(userId),
+                LocalDate.of(year, month, 1),
+                YearMonth.of(year, month).atEndOfMonth()
+        );
         List<ExpenseResponse> expensesByMonthAndYear = new ArrayList<>();
 
         for (Expense expense : expenses) {

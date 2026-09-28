@@ -33,4 +33,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),  System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(),  System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
