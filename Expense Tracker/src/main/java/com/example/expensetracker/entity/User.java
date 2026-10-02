@@ -21,4 +21,5 @@ public class User {
     private String email;
     @CreationTimestamp
     private LocalDateTime createdAt;
+    private String password;
 }

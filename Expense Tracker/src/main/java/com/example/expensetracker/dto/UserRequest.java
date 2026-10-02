@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record UserRequest(
         @NotNull String userName,
-        @NotNull String email
+        @NotNull String email,
+        @NotNull String password
         ) {
 }
